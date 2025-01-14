@@ -53,7 +53,7 @@ class homepage:
 
         with st.sidebar:
             # Menambahkan logo kecil di sidebar
-            st.image("logo_harmoncorps.png")
+            st.image("images/logo_harmoncorps.png")
             
             app = option_menu(
                 menu_title="Select Menu",
