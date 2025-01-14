@@ -268,7 +268,7 @@ def app():
         show_confirmation_buttons()
 
     else:
-        st.image("background_harmoncorps.png")
+        st.image("images/background_harmoncorps.png")
         st.text("Please log in to access this page.")
 
 
