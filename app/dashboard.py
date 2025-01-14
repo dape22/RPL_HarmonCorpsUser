@@ -226,5 +226,5 @@ def app():
                             st.dataframe(df)
 
     else:
-        st.image("background_harmoncorps.png")
+        st.image("images/background_harmoncorps.png")
         st.text("Please log in to access this page.")
