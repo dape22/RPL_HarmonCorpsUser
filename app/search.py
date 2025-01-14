@@ -44,5 +44,5 @@ def app():
                 st.error("Sepatu dengan ukuran tersebut tidak ditemukan.")
     else:
         
-        st.image("background_harmoncorps.png")
+        st.image("images/background_harmoncorps.png")
         st.text("Please log in to access this page.")
