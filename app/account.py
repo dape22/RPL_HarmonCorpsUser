@@ -235,7 +235,7 @@ def app():
                     })
                     
                     send_verification_link_to_admin(email)
-                    st.success("Account created successfully!")
+                    st.toast("Account created successfully!")
                     st.markdown("Please Login using your email and password")
                     st.balloons()
                 except Exception as e:
