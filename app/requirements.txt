@@ -3,3 +3,7 @@ firebase-admin
 streamlit-option-menu
 matplotlib
 reportlab
+base64
+io
+uuid
+
