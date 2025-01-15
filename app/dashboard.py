@@ -3,10 +3,10 @@ import pandas as pd
 from datetime import datetime
 import matplotlib.pyplot as plt
 
-# Pemetaan bulan Indonesia ke bulan Inggris
-bulan_indonesia = [
-    "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+# Pemetaan bulan Inggris
+bulan_inggris = [
+    "January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"
 ]
 
 def app():
@@ -32,7 +32,7 @@ def app():
                 # Mengonversi tanggal dengan format '%Y-%m-%d'
                 tanggal = datetime.strptime(tanggal_str, "%Y-%m-%d")
                 bulan = tanggal.month - 1
-                bulan_format = bulan_indonesia[bulan]
+                bulan_format = bulan_inggris[bulan]
                 tanggal_format = tanggal.strftime(f"%d {bulan_format} %Y")
             except ValueError:
                 tanggal_format = tanggal_str
@@ -47,6 +47,7 @@ def app():
                 "item_ukuran": item_ukuran,
             }
 
+            
             data.append(record)
         
         df = pd.DataFrame(data)
@@ -64,14 +65,12 @@ def app():
             choice = st.selectbox("Opsi", ["Opsi 1", "Opsi 2"], label_visibility="collapsed", index=0)
 
             if choice == "Opsi 1":
-                bulan = st.selectbox("Pilih Bulan", ["All"] + bulan_indonesia)
+                bulan = st.selectbox("Pilih Bulan", ["All"] + bulan_inggris)
                 tahun = st.selectbox("Pilih Tahun", ["All"] + [str(i) for i in range(2020, 2026)])
                 hari = st.text_input("Masukkan Hari (Tanggal)", "")
 
                 if bulan != "All":
-                    # Menjaga bulan dalam format Inggris untuk filter
-                    bulan_english = bulan_indonesia.index(bulan) + 1
-                    df = df[df["tanggal"].str.contains(f" {bulan_english:02d} ")]
+                    df = df[df["tanggal"].str.contains(bulan)]
                 if tahun != "All":
                     df = df[df["tanggal"].str.endswith(tahun)]
                 if hari:
@@ -130,16 +129,17 @@ def app():
 
                     with col2:
                         # Urutkan total barang terjual secara descending
-                        st.markdown(f"**Total Barang Terjual :** {total_barang.sum()}")
-                        total_barang_sorted = total_barang.sort_values(ascending=False)
-                        st.bar_chart(total_barang_sorted)
+                            st.markdown(f"**Total Barang Terjual :** {total_barang.sum()}")
+                            total_barang_sorted = total_barang.sort_values(ascending=False)
+                            st.bar_chart(total_barang_sorted)
 
-                        # Bar Chart untuk item yang terjual, diurutkan
-                        st.markdown(f"**Distribusi Item Terjual**")
-                        item_count_sorted = item_count.sort_values(ascending=False)
-                        st.bar_chart(item_count_sorted)
+                            # Bar Chart untuk item yang terjual, diurutkan
+                            st.markdown(f"**Distribusi Item Terjual**")
+                            item_count_sorted = item_count.sort_values(ascending=False)
+                            st.bar_chart(item_count_sorted)
 
-                    # Tampilkan DataFrame dan dua diagram batang dalam kolom
+
+                         # Tampilkan DataFrame dan dua diagram batang dalam kolom
                     with st.expander('See DataFrame (Selected time frame)'):
                         st.dataframe(df)
 
@@ -156,8 +156,8 @@ def app():
                 end_date = st.date_input("End date", min_value=min_date, max_value=max_date)
 
                 # Info widget
-                tanggal_awal1 = tanggal_awal.strftime('%d %B %Y')
-                tanggal_akhir1 = tanggal_akhir.strftime('%d %B %Y')
+                tanggal_awal1 = start_date.strftime('%d %B %Y')
+                tanggal_akhir1 = end_date.strftime('%d %B %Y')
                 st.info(f"Menampilkan kurun waktu: {tanggal_awal1} hingga: {tanggal_akhir1}")
 
                 if start_date and end_date:
@@ -220,11 +220,10 @@ def app():
                             item_count_sorted = item_count.sort_values(ascending=False)
                             st.bar_chart(item_count_sorted)
 
-                        # Tampilkan informasi tanggal yang dipilih
-                        start_date_str = start_date.strftime('%d %B %Y')
-                        end_date_str = end_date.strftime('%d %B %Y')
-                        st.info(f"Menampilkan kurun waktu: {start_date_str} hingga: {end_date_str}")
-
-                        # Tampilkan DataFrame dan dua diagram batang dalam kolom
+                         # Tampilkan DataFrame dan dua diagram batang dalam kolom
                         with st.expander('See DataFrame (Selected time frame)'):
                             st.dataframe(df)
+
+    else:
+        st.image("images/background_harmoncorps.png")
+        st.text("Please log in to access this page.")
