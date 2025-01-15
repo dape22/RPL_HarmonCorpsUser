@@ -32,7 +32,7 @@ def app():
 
         st.markdown('<h3 style="font-size: 20px;">Halaman Pembayaran 💳</h3>', unsafe_allow_html=True)
         # Nama item
-        selected_item = st.selectbox("Pilih Barang", df["nama"].tolist())
+        selected_item = st.selectbox("Pilih Barang", df["nama"].unique().tolist())
 
         # Ukuran yang tersedia
         available_sizes = df[df["nama"] == selected_item]["ukuran"].unique().tolist()
@@ -240,6 +240,20 @@ def app():
                         pdf_base64 = base64.b64encode(pdf_file.getvalue()).decode()
                         st.session_state.pdf_link = f'<a href="data:application/pdf;base64,{pdf_base64}" download="invoice.pdf">Click untuk mengunduh faktur pembelajaan</a>'
 
+                        #Mengurangi Stok pada database barang
+                        df_baru = load_data()  # Memuat data yang terbaru
+                        for item in cart:
+                            # Kurangi stok yang terjual dari DataFrame
+                            selected_item = item["item"]
+                            selected_size = item["ukuran"]
+                            jumlah_terjual = item["jumlah"]
+
+                            # Update stok di dataframe
+                            df_baru.loc[(df_baru["nama"] == selected_item) & (df_baru["ukuran"] == selected_size), "stok"] -= jumlah_terjual
+
+                        # Simpan perubahan stok kembali ke CSV (atau database jika digunakan)
+                        df_baru.to_csv('sepatu.csv', index=False)
+
                         # Kosongkan keranjang belanja
                         st.session_state.cart = []
                         st.success("Pembelian berhasil diproses! Stok telah diperbarui.")
@@ -268,7 +282,7 @@ def app():
         show_confirmation_buttons()
 
     else:
-        st.image("images/background_harmoncorps.png")
+        st.image("background_harmoncorps.png")
         st.text("Please log in to access this page.")
 
 
