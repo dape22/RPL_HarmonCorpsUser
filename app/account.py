@@ -35,13 +35,6 @@ def get_db():
     # Mengembalikan objek Firestore
     return db
 
-# Contoh Penggunaan
-if 'db' not in st.session_state:  # Cek apakah db sudah ada di session_state
-    st.session_state.db = get_db()
-
-# Sekarang objek Firestore tersedia di st.session_state.db
-db = st.session_state.db
-
 
 
 # Masukkan API Key Firebase Anda di sini
@@ -75,7 +68,12 @@ def app():
 
     if 'signout' not in st.session_state:
         st.session_state.signout = False  # Awal status signout = False
-
+    # Contoh Penggunaan
+    if 'db' not in st.session_state:  # Cek apakah db sudah ada di session_state
+        st.session_state.db = get_db()
+    
+    # Sekarang objek Firestore tersedia di st.session_state.db
+    db = st.session_state.db
     
     def send_verification_link_to_admin(email):
         try:
