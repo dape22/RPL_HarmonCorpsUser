@@ -4,9 +4,9 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 
 # Pemetaan bulan Indonesia ke bulan Inggris
-bulan_indonesia = [
-    "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+bulan_inggris = [
+    "January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"
 ]
 
 def app():
