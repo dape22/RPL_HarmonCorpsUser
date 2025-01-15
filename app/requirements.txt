@@ -3,4 +3,4 @@ firebase-admin
 streamlit-option-menu
 matplotlib
 reportlab
-
+locale
