@@ -4,6 +4,8 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import locale
 
+
+locale.setlocale(locale.LC_TIME, 'id_ID.utf8')
 def app():
     if 'username' not in st.session_state:
         st.session_state.username = ''
