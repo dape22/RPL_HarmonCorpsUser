@@ -6,5 +6,4 @@ reportlab
 base64
 io
 uuid
-smtplib
 locale
