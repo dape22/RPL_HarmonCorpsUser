@@ -41,11 +41,12 @@ def app():
                 "id_pelanggan": doc_data.get("id_pelanggan"),
                 "id_invoice": ', '.join(doc_data.get("id_penjualan", [])),
                 "tanggal": tanggal_format,
-                "total_harga": ', '.join(map(str, doc_data.get("total_harga", [])))),
+                "total_harga": ', '.join(map(str, doc_data.get("total_harga", []))),
                 "nama_kasir": doc_data.get("username"),
                 "waktu": doc_data.get("waktu"),
                 "item_ukuran": item_ukuran,
             }
+
             
             data.append(record)
         
