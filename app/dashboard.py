@@ -4,9 +4,9 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 
 # Pemetaan bulan Indonesia ke bulan Inggris
-bulan_inggris = [
-    "January", "February", "March", "April", "May", "June", 
-    "July", "August", "September", "October", "November", "December"
+bulan_indonesia = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
 ]
 
 def app():
@@ -32,7 +32,7 @@ def app():
                 # Mengonversi tanggal dengan format '%Y-%m-%d'
                 tanggal = datetime.strptime(tanggal_str, "%Y-%m-%d")
                 bulan = tanggal.month - 1
-                bulan_format = bulan_inggris[bulan]
+                bulan_format = bulan_indonesia[bulan]
                 tanggal_format = tanggal.strftime(f"%d {bulan_format} %Y")
             except ValueError:
                 tanggal_format = tanggal_str
@@ -64,12 +64,14 @@ def app():
             choice = st.selectbox("Opsi", ["Opsi 1", "Opsi 2"], label_visibility="collapsed", index=0)
 
             if choice == "Opsi 1":
-                bulan = st.selectbox("Pilih Bulan", ["All"] + bulan_inggris)
+                bulan = st.selectbox("Pilih Bulan", ["All"] + bulan_indonesia)
                 tahun = st.selectbox("Pilih Tahun", ["All"] + [str(i) for i in range(2020, 2026)])
                 hari = st.text_input("Masukkan Hari (Tanggal)", "")
 
                 if bulan != "All":
-                    df = df[df["tanggal"].str.contains(bulan)]
+                    # Menjaga bulan dalam format Inggris untuk filter
+                    bulan_english = bulan_indonesia.index(bulan) + 1
+                    df = df[df["tanggal"].str.contains(f" {bulan_english:02d} ")]
                 if tahun != "All":
                     df = df[df["tanggal"].str.endswith(tahun)]
                 if hari:
