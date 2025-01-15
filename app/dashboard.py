@@ -11,7 +11,7 @@ def app():
     if 'signout' not in st.session_state:
         st.session_state.signout = False
     
-    db = st.session_state.db
+    
     bulan_indonesia = [
         "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
         "Juli", "Agustus", "September", "Oktober", "November", "Desember"
@@ -53,6 +53,7 @@ def app():
         return df
 
     if st.session_state.signout:
+        db = st.session_state.db
         input_hari_salah = False
         st.markdown('<h3 style="font-size: 20px;">Dashboard penjualan 📊</h3>', unsafe_allow_html=True)
         df = get_data()
