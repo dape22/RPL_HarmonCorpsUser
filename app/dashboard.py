@@ -2,22 +2,19 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import matplotlib.pyplot as plt
-import locale
 
+# Pemetaan bulan Indonesia ke bulan Inggris
+bulan_indonesia = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+]
 
-locale.setlocale(locale.LC_TIME, 'id_ID.utf8')
 def app():
     if 'username' not in st.session_state:
         st.session_state.username = ''
 
     if 'signout' not in st.session_state:
         st.session_state.signout = False
-    
-    
-    bulan_indonesia = [
-        "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
-        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-    ]
     
     def get_data():       
         docs = db.collection("Penjualan").stream()
@@ -32,6 +29,7 @@ def app():
             
             tanggal_str = doc_data.get("tanggal")
             try:
+                # Mengonversi tanggal dengan format '%Y-%m-%d'
                 tanggal = datetime.strptime(tanggal_str, "%Y-%m-%d")
                 bulan = tanggal.month - 1
                 bulan_format = bulan_indonesia[bulan]
@@ -43,7 +41,7 @@ def app():
                 "id_pelanggan": doc_data.get("id_pelanggan"),
                 "id_invoice": ', '.join(doc_data.get("id_penjualan", [])),
                 "tanggal": tanggal_format,
-                "total_harga": ', '.join(map(str, doc_data.get("total_harga", []))),
+                "total_harga": ', '.join(map(str, doc_data.get("total_harga", [])))),
                 "nama_kasir": doc_data.get("username"),
                 "waktu": doc_data.get("waktu"),
                 "item_ukuran": item_ukuran,
@@ -90,6 +88,7 @@ def app():
                 else:
                     # Konversi kolom tanggal ke datetime
                     df["tanggal"] = pd.to_datetime(df["tanggal"], format='%d %B %Y')
+
                     # Konversi kolom total_harga ke numerik
                     df["total_harga"] = pd.to_numeric(df["total_harga"].str.replace(",", ""), errors="coerce")
 
@@ -142,23 +141,20 @@ def app():
                          # Tampilkan DataFrame dan dua diagram batang dalam kolom
                     with st.expander('See DataFrame (Selected time frame)'):
                         st.dataframe(df)
-                    
-                    
 
             else:
-                #konversi tanggal
-                locale.setlocale(locale.LC_TIME, 'id_ID.UTF-8')
+                # Konversi tanggal
                 tanggal = pd.to_datetime(df['tanggal'], format='%d %B %Y')
                 tanggal_awal = tanggal.min()
                 tanggal_akhir = tanggal.max()
 
-                #input date
+                # Input date
                 min_date = tanggal_awal.strftime('%Y-%m-%d')
                 max_date = tanggal_akhir.strftime('%Y-%m-%d')
                 start_date = st.date_input("Start date", min_value=min_date, max_value=max_date)
                 end_date = st.date_input("End date", min_value=min_date, max_value=max_date)
 
-                #info widget
+                # Info widget
                 tanggal_awal1 = tanggal_awal.strftime('%d %B %Y')
                 tanggal_akhir1 = tanggal_akhir.strftime('%d %B %Y')
                 st.info(f"Menampilkan kurun waktu: {tanggal_awal1} hingga: {tanggal_akhir1}")
@@ -222,7 +218,6 @@ def app():
                             st.markdown(f"**Distribusi Item Terjual**")
                             item_count_sorted = item_count.sort_values(ascending=False)
                             st.bar_chart(item_count_sorted)
-
 
                          # Tampilkan DataFrame dan dua diagram batang dalam kolom
                         with st.expander('See DataFrame (Selected time frame)'):
