@@ -1,22 +1,66 @@
 import streamlit as st
+import json
 import firebase_admin
-from firebase_admin import credentials, auth, firestore
+from firebase_admin import credentials, firestore, auth
 from datetime import datetime
+import requests
 
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-# Inisialisasi Firebase hanya sekali
+
+
+def get_db():
+    # Mengambil kredensial dari secrets Streamlit
+    firebase_key_json = st.secrets["text_key"]["firebase_key_json"]
+
+    # Mengonversi string JSON menjadi dictionary
+    key_dict = json.loads(firebase_key_json)
+    creds = credentials.Certificate(key_dict)
+
+    # Menginisialisasi Firebase Admin SDK
+    firebase_admin.initialize_app(creds)
+    print(key_dict)
+    # Mengakses Firestore
+    db = firestore.client()
+
+    # Mengembalikan objek Firestore dan Auth
+    return db, auth
+
+# Contoh Penggunaan
 if not firebase_admin._apps:
-    cred = credentials.Certificate("rpl-edudoexam-58276d3f3b2b.json")
-    firebase_admin.initialize_app(cred)
+    db, auth = get_db()
+    
 
 # Simpan Firestore DB ke dalam st.session_state jika belum ada
 if 'db' not in st.session_state:
-    st.session_state.db = firestore.client()
+    st.session_state.db = db
+
+
+
+# Masukkan API Key Firebase Anda di sini
+FIREBASE_API_KEY = st.secrets["FIREBASE_API_KEY"]["apiKey"]
+
+def login_with_email_and_password(email, password):
+    url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={FIREBASE_API_KEY}"
+    payload = {
+        "email": email,
+        "password": password,
+        "returnSecureToken": True
+    }
+    try:
+        response = requests.post(url, json=payload)
+        response.raise_for_status()
+        data = response.json()
+        return data  # Mengembalikan data pengguna yang berhasil login
+    except requests.exceptions.RequestException as e:
+        st.error("Login failed! Please check your email and password.")
+        return None
 
 def app():
+    
+    # st.write(st.secrets)
     # Inisialisasi session state untuk user data
     if 'username' not in st.session_state:
         st.session_state.username = ''
@@ -122,14 +166,17 @@ def app():
             if not user.email_verified:
                 st.warning("Your email is not verified by admin. Please contact admin for verification.")
 
-            else:
-            # Login berhasil
+            
+            if login_with_email_and_password(email,password):
+                
                 st.session_state.username = user.uid
                 st.session_state.useremail = user.email
                 st.session_state.signout = True
-                save_login_logout(user.uid, "login")  # Simpan data login
+                save_login_logout(user.uid, "login")
+                    
         except Exception as e:
             st.warning(f"Login Failed: {e}")
+            # st.rerun()
 
     def logout():
         save_login_logout(st.session_state.username, "logout")  # Simpan data logout
@@ -169,7 +216,7 @@ def app():
                 try:
                     db = st.session_state.db  # Akses Firestore dari session_state
                     # Membuat pengguna baru menggunakan Firebase Authentication
-                    user = auth.create_user(email=email, password=password, uid=username)
+                    user = auth.createUserWithEmailAndPassword(email=email, password=password, uid=username)
                     
                     # Menyimpan data tambahan ke Firestore
                     user_ref = db.collection("Absensi Karyawan").document(username)
